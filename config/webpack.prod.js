@@ -3,7 +3,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const safePostCssParser = require('postcss-safe-parser');
 const TerserPlugin = require('terser-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
@@ -37,7 +37,12 @@ module.exports = {
             {
                 test: /\.css$/,
                 use: [
-                    MiniCssExtractPlugin.loader,
+                    {
+                        loader: MiniCssExtractPlugin.loader, 
+                        options: {
+                            publicPath: ''
+                        }
+                    },
                     {
                         loader: 'css-loader',
                         options: {
@@ -49,10 +54,9 @@ module.exports = {
                     {
                         loader: 'postcss-loader',
                         options: {
-                            ident: 'postcss',
-                            config: {
-                                path: path.resolve(ROOT_DIRECTORY, 'config'),
-                            },
+                            postcssOptions: {
+                                config: path.resolve(ROOT_DIRECTORY, 'config'),
+                            }
                         },
                     },
                 ],
@@ -60,7 +64,12 @@ module.exports = {
             {
                 test: /\.(sass|scss)$/,
                 use: [
-                    MiniCssExtractPlugin.loader,
+                    {
+                        loader: MiniCssExtractPlugin.loader, 
+                        options: {
+                            publicPath: ''
+                        }
+                    },
                     {
                         loader: 'css-loader',
                         options: {
@@ -72,10 +81,9 @@ module.exports = {
                     {
                         loader: 'postcss-loader',
                         options: {
-                            ident: 'postcss',
-                            config: {
-                                path: path.resolve(ROOT_DIRECTORY, 'config'),
-                            },
+                            postcssOptions: {
+                                config: path.resolve(ROOT_DIRECTORY, 'config'),
+                            }
                         },
                     },
                     'resolve-url-loader',
@@ -138,15 +146,13 @@ module.exports = {
         new CompressionPlugin({
             algorithm: 'gzip',
             compressionOptions: { level: 9 },
-            filename: '[path].gz[query]',
-            minRatio: 0.8,
+            filename: '[path][base].gz',
             test: /\.(js|css|html|svg)$/,
         }),
         new CompressionPlugin({
             algorithm: 'brotliCompress',
             compressionOptions: { level: 11 },
-            filename: '[path].br[query]',
-            minRatio: 0.8,
+            filename: '[path][base].br',
             test: /\.(js|css|html|svg)$/,
         }),
         new CopyPlugin({
@@ -178,25 +184,7 @@ module.exports = {
                     },
                 },
             }),
-            new OptimizeCSSAssetsPlugin({
-                cssProcessorOptions: {
-                    parser: safePostCssParser,
-                    map: false,
-                },
-                cssProcessorPluginOptions: {
-                    preset: [
-                        'default',
-                        {
-                            discardComments: {
-                                removeAll: true,
-                            },
-                            minifyFontValues: {
-                                removeQuotes: false,
-                            },
-                        },
-                    ],
-                },
-            }),
+            new CssMinimizerPlugin(),
         ],
         runtimeChunk: {
             name: (entrypoint) => `runtime-${entrypoint.name}`,
