@@ -19,7 +19,7 @@ module.exports = {
         port: 3000,
         overlay: true,
     },
-    devtool: 'cheap-module-eval-source-map',
+    devtool: 'eval-cheap-module-source-map',
     module: {
         rules: [
             {
@@ -48,10 +48,9 @@ module.exports = {
                     {
                         loader: 'postcss-loader',
                         options: {
-                            ident: 'postcss',
-                            config: {
-                                path: path.resolve(ROOT_DIRECTORY, 'config'),
-                            },
+                            postcssOptions: {
+                                config: path.resolve(ROOT_DIRECTORY, 'config'),
+                            }
                         },
                     },
                 ],
@@ -71,10 +70,9 @@ module.exports = {
                     {
                         loader: 'postcss-loader',
                         options: {
-                            ident: 'postcss',
-                            config: {
-                                path: path.resolve(ROOT_DIRECTORY, 'config'),
-                            },
+                            postcssOptions: {
+                                config: path.resolve(ROOT_DIRECTORY, 'config'),
+                            }
                         },
                     },
                     'resolve-url-loader',
