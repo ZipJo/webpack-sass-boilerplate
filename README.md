@@ -2,8 +2,17 @@
 
 Very basic boilerplate, with a dev server and a build-config to build project into a Jamstack App.
 
-Notable packages used by this Project: node and npm, webpack, sass, postcss, eslint.
-Features worth noting: gzip compression, css optimizer. (May add more stuff later)
+Notable packages used by this Project:
+- node and npm
+- webpack
+- sass
+- postcss
+- eslint
+
+Features worth noting:
+- gzip and brotli compression
+
+_(May add more stuff later)_
 
 ## 🚀 Quick start
 
